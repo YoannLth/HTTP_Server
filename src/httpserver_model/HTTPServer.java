@@ -31,9 +31,8 @@ public class HTTPServer {
         System.out.println("Listening for connection on port 1026 ....");
         while (true) {
             Socket replySocket = serverSocket.accept();            
-            Date today = new Date();
-            String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today + "\r\n\r\n";
-            replySocket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
+            ThreadCommunication tc = new ThreadCommunication(replySocket);
+            tc.start();
         }
 
     }
