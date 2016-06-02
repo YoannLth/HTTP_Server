@@ -5,6 +5,9 @@
  */
 package httpserver_arar;
 
+import httpserver_model.HTTPServer;
+import java.io.IOException;
+
 /**
  *
  * @author Yoann
@@ -14,8 +17,9 @@ public class HTTPServer_ARAR {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void main(String[] args) throws IOException {
+        HTTPServer httpServer = new HTTPServer();
+        httpServer.initializeServer();
     }
     
 }
