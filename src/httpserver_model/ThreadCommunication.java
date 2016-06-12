@@ -18,62 +18,69 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Yoann
+ * @author Yoann LATHUILIERE
  */
 public class ThreadCommunication extends Thread{
-
+    // Création d'un socket pour la réponse
     Socket replySocket = null;
 
+    /**
+     * Constructeur du thread
+     */
     public ThreadCommunication(Socket s) {
-        replySocket = s;
+        replySocket = s;    
     }
 
+    /**
+     * Fonction run du thread, qui est chargé de récuperer la requête du serveur et de l'executer
+     */
     @Override
     public void run() {
-        String request = "";
+        String request;
         while (true) {
             try {
-                int i;
-                
-                InputStream is = replySocket.getInputStream();
-                InputStreamReader r = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(r);
-                request = br.readLine();
-                
-                boolean requestValid = requestIsValid(request);
+                InputStream is = replySocket.getInputStream(); // Récupère la requete du client
+                InputStreamReader r = new InputStreamReader(is);  // Création d'un buffer à partir du la requête
+                BufferedReader br = new BufferedReader(r); // Création d'un buffer à partir du la requête
+                request = br.readLine(); // Lit la première ligne de la requête
+                analyseRequest(request); // Vérifie si la requête est valide et traite la requête si elle l'est
             } catch (IOException ex) {
                 Logger.getLogger(ThreadCommunication.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
     
-    public boolean requestIsValid(String s){
+    /**
+     * Fonction qui vérifie si une requête est valide (la requête est bien un 'GET') et execute la requête ensuite
+     */
+    public void analyseRequest(String s){
         try
         {
-            String[] parts = s.split("\\ "); // String array, each element is text between dots
-            String httpRequestType = parts[0];    // Text before the first dot
-            String httpRequest = parts[1];
-            System.out.println(httpRequestType);
+            String[] parts = s.split("\\ "); // Sépare la requete en 'mots' pour pouvoir l'analiser (on considère un mot par une suite de caractères finie par un espace ' ')
+            String httpRequestType = parts[0];    // Premier mot de la requete, soit le type (GET, POST...)
+            String httpRequest = parts[1]; // Deuxieme mot de la requête, soit le fichié demandé
+            System.out.println("'" + this.replySocket.getInetAddress().getHostAddress() + "'" + " demande " + "'" + s + "'");
             httpRequestType.toUpperCase();
 
+            // Seul la fonction GET est supporté actuellement
             switch (httpRequestType) {
                 case "GET":  
-                    System.out.println("GET REQUEST");
                     treatGetRequest(httpRequest);
                     break;
                 default: 
                     System.out.println("INVALID REQUEST");
                     break;
             }
-            return true;
         }
         catch(Exception ex){
-            return false;
+            System.out.println(ex);
         }
     }
     
+    /**
+     * Fonction qui traite la requête 'GET' et renvoi le résultat attendu
+     */
     public void treatGetRequest(String request){
-        System.out.println(request);
         if(request.charAt(0) == '/'){
             request = request.substring(1);
         }
@@ -81,20 +88,15 @@ public class ThreadCommunication extends Thread{
         String contentLength = "Content-Length: ";
         try{
             FileInputStream file; 
-            //file = new FileInputStream(getClass().getResource("/serverFiles/" + request).toString());
-            //file = new FileInputStream(getClass().getResource("/serverFiles/test.txt").toExternalForm());
-            //file = new FileInputStream("httpserver_serverFiles/test.txt");
             file = new FileInputStream(request);
             
             int fileSize = (int) file.getChannel().size();
             contentLength += fileSize;
             String[] parts = request.split("\\."); 
             String ext = parts[1].toLowerCase();
-            System.out.println(ext);
             
             byte[] fileContent = new byte[fileSize];
             file.read(fileContent,0,fileSize);
-            System.out.println(fileContent.length);
             
             Date today = new Date();
             InetAddress ip = InetAddress.getLocalHost();
