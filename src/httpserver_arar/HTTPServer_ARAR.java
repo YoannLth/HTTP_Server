@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  *
- * @author Yoann
+ * @author Yoann LATHUILIERE
  */
 public class HTTPServer_ARAR {
 
