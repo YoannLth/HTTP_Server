@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Yoann
+ * @author Yoann LATHUILIERE
  */
 public class HTTPServer {
 
