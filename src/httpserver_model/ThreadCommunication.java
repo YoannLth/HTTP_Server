@@ -88,9 +88,6 @@ public class ThreadCommunication extends Thread{
      * Fonction qui traite la requête 'GET' et renvoi le résultat attendu
      */
     public void treatGetRequest(String request){
-        if(request.charAt(0) == '/'){
-            request = request.substring(1);
-        }
         String contentType = "Content-Type: ";
         String contentLength = "Content-Length: ";
         try{
