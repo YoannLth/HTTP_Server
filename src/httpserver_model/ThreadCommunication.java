@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,8 +38,14 @@ public class ThreadCommunication extends Thread{
     @Override
     public void run() {
         String request;
+        try {
+            replySocket.setKeepAlive(true);
+        } catch (SocketException ex) {
+            Logger.getLogger(ThreadCommunication.class.getName()).log(Level.SEVERE, null, ex);
+        }
         while (true) {
             try {
+                
                 InputStream is = replySocket.getInputStream(); // Récupère la requete du client
                 InputStreamReader r = new InputStreamReader(is);  // Création d'un buffer à partir du la requête
                 BufferedReader br = new BufferedReader(r); // Création d'un buffer à partir du la requête
@@ -73,7 +80,7 @@ public class ThreadCommunication extends Thread{
             }
         }
         catch(Exception ex){
-            System.out.println(ex);
+            //System.out.println(ex);
         }
     }
     
