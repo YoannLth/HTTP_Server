@@ -52,7 +52,21 @@ public class ThreadCommunication extends Thread{
                 InputStreamReader r = new InputStreamReader(is);  // Création d'un buffer à partir du la requête
                 BufferedReader br = new BufferedReader(r); // Création d'un buffer à partir du la requête
                 request = br.readLine(); // Lit la première ligne de la requête
-                analyseRequest(request); // Vérifie si la requête est valide et traite la requête si elle l'est
+                int res = analyseRequest(request); // Vérifie si la requête est valide et traite la requête si elle l'est
+                switch (res)
+                {
+                    case -1:
+                        System.out.println("Les requêtes autres que GET ne sont pas prises en charge.");
+                        break;
+                    case -2:
+                        System.out.println("File not found");
+                        break;
+                    case -3:
+                        System.out.println("Le serveur à rencontré un problème.");
+                        break;
+                    default:
+                        break;
+                }
             } catch (IOException ex) {
                 Logger.getLogger(ThreadCommunication.class.getName()).log(Level.SEVERE, null, ex);
             }
