@@ -24,7 +24,7 @@ public class HTTPServer {
     /**
      * Fonction qui initilise le serveur en créant un serveur socket sur le port définie et attend les connexions
      */
-    public void initializeServer() throws IOException {
+    public void initializeServer() {
         try {
             serverSocket = new ServerSocket(HTTP_DEFAULT_PORT); // Création du serveur socket sur le port définie
         } catch (IOException ex) {
@@ -33,9 +33,16 @@ public class HTTPServer {
         System.out.println("Listening for connection on port 1026 ....");
         // Boucle infinie qui attend les connexions
         while (true) {
-            Socket replySocket = serverSocket.accept(); // Accepte la connexion           
-            ThreadCommunication tc = new ThreadCommunication(replySocket); // Crée un nouveau ThreadCommunication (thread qui gère les communications avec le client)
-            tc.start(); // Démarrage du thread
+            Socket replySocket;
+            try
+            {
+                replySocket = serverSocket.accept(); // Accepte la connexion
+                ThreadCommunication tc = new ThreadCommunication(replySocket); // Crée un nouveau ThreadCommunication (thread qui gère les communications avec le client)
+                tc.start(); // Démarrage du thread
+            } catch (IOException ex)
+            {
+                Logger.getLogger(HTTPServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
